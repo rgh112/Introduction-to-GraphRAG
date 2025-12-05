@@ -1,5 +1,7 @@
 # 📊 Introduction to GraphRAG
 
+🌐 **[Live Demo](https://introduction-to-graph-rag.vercel.app/)** | 📖 [Documentation](#-features)
+
 An interactive educational platform for understanding **Graph Retrieval-Augmented Generation (GraphRAG)** with real-time knowledge graph visualization.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)

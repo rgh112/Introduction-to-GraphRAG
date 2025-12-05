@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SystemConfig, RetrievalMethod, EmbeddingModel, SynthesisModel, ResponseStyle } from '../types';
 import { RETRIEVAL_OPTIONS, EMBEDDING_OPTIONS, SYNTHESIS_OPTIONS, STYLE_OPTIONS } from '../constants';
+import { setApiKey, hasApiKey } from '../services/geminiService';
 
 interface SidebarProps {
   config: SystemConfig;
@@ -8,7 +9,7 @@ interface SidebarProps {
   onGenerateGraph: (topic: string, isPaperMode: boolean) => void;
   onLoadDataset: (type: 'primekg' | 'moviekg' | 'mentalhealth') => void;
   isGenerating: boolean;
-  onOpenDocs: () => void; // New Prop
+  onOpenDocs: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -17,6 +18,34 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [activeTab, setActiveTab] = useState<'ai' | 'connect'>('ai');
   const [topicInput, setTopicInput] = useState("");
   const [isPaperMode, setIsPaperMode] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState("");
+  const [isApiKeySet, setIsApiKeySet] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
+
+  // Load API key from localStorage on mount
+  useEffect(() => {
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) {
+      setApiKeyInput(savedKey);
+      setApiKey(savedKey);
+      setIsApiKeySet(true);
+    }
+  }, []);
+
+  const handleSaveApiKey = () => {
+    if (apiKeyInput.trim()) {
+      setApiKey(apiKeyInput.trim());
+      localStorage.setItem('gemini_api_key', apiKeyInput.trim());
+      setIsApiKeySet(true);
+    }
+  };
+
+  const handleClearApiKey = () => {
+    setApiKey('');
+    localStorage.removeItem('gemini_api_key');
+    setApiKeyInput('');
+    setIsApiKeySet(false);
+  };
 
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +61,75 @@ const Sidebar: React.FC<SidebarProps> = ({
           KG-RAG
         </h1>
         <p className="text-xs text-gray-400 mt-1">Modular RAG Platform</p>
+      </div>
+
+      {/* API Key Section */}
+      <div className="p-4 border-b border-gray-800 bg-gray-950">
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-xs text-gray-400 font-medium flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+            Gemini API Key
+          </label>
+          {isApiKeySet && (
+            <span className="text-[10px] bg-green-900/50 text-green-400 px-1.5 py-0.5 rounded">Active</span>
+          )}
+        </div>
+        {!isApiKeySet ? (
+          <div className="space-y-2">
+            <div className="relative">
+              <input
+                type={showApiKey ? "text" : "password"}
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+                placeholder="AIzaSy..."
+                className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 pr-8"
+              />
+              <button
+                type="button"
+                onClick={() => setShowApiKey(!showApiKey)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+              >
+                {showApiKey ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            <button
+              onClick={handleSaveApiKey}
+              disabled={!apiKeyInput.trim()}
+              className="w-full py-1.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-xs rounded transition-colors"
+            >
+              Save API Key
+            </button>
+            <p className="text-[10px] text-gray-600">
+              Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Google AI Studio</a>
+            </p>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-xs text-gray-400 font-mono truncate">
+              ••••••••{apiKeyInput.slice(-4)}
+            </div>
+            <button
+              onClick={handleClearApiKey}
+              className="px-2 py-2 bg-red-900/50 hover:bg-red-900 text-red-400 text-xs rounded transition-colors"
+              title="Remove API Key"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Source Selection Tabs */}

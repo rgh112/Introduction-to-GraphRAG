@@ -3,19 +3,22 @@ import type { Schema } from "@google/genai";
 import { GraphData, SystemConfig, RetrievalMethod, GraphNode, EmbeddingModel, ResponseStyle } from '../types';
 import { GEMINI_MODEL_FAST, GEMINI_MODEL_GRAPH_GEN } from '../constants';
 
-// Safely access process.env to avoid "process is not defined" ReferenceError in some browser environments
-const getApiKey = () => {
-  try {
-    // @ts-ignore
-    return process.env.API_KEY || '';
-  } catch (e) {
-    console.warn("process.env.API_KEY not accessible");
-    return '';
+// Dynamic API Key management
+let currentApiKey: string = '';
+let ai: GoogleGenAI | null = null;
+
+export const setApiKey = (key: string) => {
+  currentApiKey = key;
+  if (key) {
+    ai = new GoogleGenAI({ apiKey: key });
+  } else {
+    ai = null;
   }
 };
 
-const apiKey = getApiKey();
-const ai = new GoogleGenAI({ apiKey });
+export const getApiKey = (): string => currentApiKey;
+
+export const hasApiKey = (): boolean => !!currentApiKey && !!ai;
 
 // Helper to clean JSON from Markdown blocks
 const cleanJson = (text: string): string => {
@@ -52,7 +55,7 @@ const cosineSimilarity = (vecA: number[], vecB: number[]): number => {
  * Generates embeddings for all nodes in the graph using Gemini
  */
 export const embedGraphNodes = async (nodes: GraphNode[]): Promise<GraphNode[]> => {
-  if (!apiKey) throw new Error("API Key missing");
+  if (!ai) throw new Error("API Key not set. Please enter your Gemini API key.");
   console.log(`Starting batch embedding for ${nodes.length} nodes...`);
 
   const embeddedNodes = await Promise.all(nodes.map(async (node) => {
@@ -87,7 +90,7 @@ export const embedGraphNodes = async (nodes: GraphNode[]): Promise<GraphNode[]> 
  * GENERATE GRAPH FROM SIMPLE TOPIC
  */
 export const generateGraphFromTopic = async (topic: string): Promise<GraphData> => {
-  if (!apiKey) throw new Error("API Key missing");
+  if (!ai) throw new Error("API Key not set. Please enter your Gemini API key.");
 
   const prompt = `
     Create a knowledge graph about the topic: "${topic}".
@@ -111,7 +114,7 @@ export const generateGraphFromTopic = async (topic: string): Promise<GraphData> 
  * GENERATE GRAPH FROM REAL ACADEMIC PAPERS (Google Search Grounding)
  */
 export const generateGraphFromPaperTopic = async (topic: string): Promise<GraphData> => {
-    if (!apiKey) throw new Error("API Key missing");
+    if (!ai) throw new Error("API Key not set. Please enter your Gemini API key.");
   
     const prompt = `
       GOAL: Conduct a REAL-TIME literature review on "${topic}" using Google Search and build a Knowledge Graph.
@@ -277,7 +280,7 @@ export const performGraphRag = async (
   graphData: GraphData,
   config: SystemConfig
 ): Promise<RagResponse> => {
-  if (!apiKey) throw new Error("API Key missing");
+  if (!ai) throw new Error("API Key not set. Please enter your Gemini API key.");
 
   // 1. EMBED THE QUERY (Real-Time)
   let queryEmbedding: number[] = [];

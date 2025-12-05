@@ -1,0 +1,5 @@
+{
+  "name": "Graph RAG",
+  "description": "An interactive, modular Knowledge Graph RAG platform. Visualize retrieval paths, swap algorithms, and chat with your data.",
+  "requestFramePermissions": []
+}

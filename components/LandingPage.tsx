@@ -104,7 +104,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, onOpenDocs }) => {
 
       {/* Navigation */}
       <nav className="relative z-10 border-b border-gray-800 bg-[#0d1117]/80 backdrop-blur-md sticky top-0">
-        <div className="w-full px-6 md:px-10 lg:px-16 xl:px-24 h-16 flex items-center justify-between">
+        <div className="w-full px-12 md:px-24 lg:px-36 xl:px-48 2xl:px-72 h-16 flex items-center justify-between">
           <div className="text-lg font-bold flex items-center gap-3 font-mono">
             <div className="w-6 h-6 bg-gradient-to-tr from-blue-600 to-purple-600 rounded flex items-center justify-center text-[10px] text-white">KG</div>
             <span className="text-gray-100">graph-rag-platform</span>
@@ -128,7 +128,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, onOpenDocs }) => {
       </nav>
 
       {/* Hero Section */}
-      <header className="relative z-10 pt-24 pb-20 px-6 md:px-10 lg:px-16 xl:px-24 text-center border-b border-gray-800">
+      <header className="relative z-10 pt-24 pb-20 px-12 md:px-24 lg:px-36 xl:px-48 2xl:px-72 text-center border-b border-gray-800">
         <div className="w-full">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/20 border border-blue-800/50 text-blue-400 text-xs font-mono mb-6">
             <span className="relative flex h-2 w-2">
@@ -164,7 +164,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, onOpenDocs }) => {
       </header>
 
       {/* Deep Dive Content */}
-      <section id="how-it-works" className="relative z-10 py-20 px-6 md:px-10 lg:px-16 xl:px-24">
+      <section id="how-it-works" className="relative z-10 py-20 px-12 md:px-24 lg:px-36 xl:px-48 2xl:px-72">
         <div className="w-full">
           
           <div className="mb-12 border-b border-gray-800 pb-4">

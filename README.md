@@ -1,6 +1,6 @@
 # 📊 Introduction to GraphRAG
 
-🌐 **[Live Demo](https://introduction-to-graph-rag.vercel.app/)** | 📖 [Documentation](#-features)
+🌐 **[Live Demo](https://introduction-to-graph-rag.vercel.app/)** | 📖 [Documentation](#-features) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MZspJqGxuCTsLk5yErs8x4vSxkXlsd4S?usp=sharing)
 
 An interactive educational platform for understanding **Graph Retrieval-Augmented Generation (GraphRAG)** with real-time knowledge graph visualization.
 
@@ -52,6 +52,14 @@ npm run dev
 1. Open the app in your browser
 2. Enter your Gemini API Key in the sidebar
 3. The key is saved locally in your browser
+
+## 🧪 Colab Exercise
+
+Want to run GraphRAG in Python? Try the standalone Colab notebook:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MZspJqGxuCTsLk5yErs8x4vSxkXlsd4S?usp=sharing)
+
+This notebook provides a hands-on exercise for understanding GraphRAG implementation from scratch.
 
 ## 📚 References
 
